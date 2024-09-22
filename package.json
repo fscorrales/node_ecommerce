@@ -4,7 +4,7 @@
   "description": "This project is part of the Talentos Digitales Bootcamp and focuses on developing a full-stack e-commerce website from scratch. The goal is to build a fully functional e-commerce platform, applying skills in both backend and frontend development.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "keywords": [
     "ecommerce",
