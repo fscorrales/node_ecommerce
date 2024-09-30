@@ -1,31 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express'
 
-const get_all_products = (_: Request, res: Response) => {
-  res.send("Mostrar todos los productos");
-};
+export const getAllProducts = (_: Request, res: Response): void => {
+  res.send('Mostrar todos los productos')
+}
 
-const get_one_product = (req: Request, res: Response) => {
-  const { id } = req.params;
-  res.send(`Mostrar producto con el id: ${id}`);
-};
+export const getOneProduct = (req: Request, res: Response): void => {
+  const { id } = req.params
+  res.send(`Mostrar producto con el id: ${id}`)
+}
 
-const create_product = (req: Request, res: Response) => {
-  const { id, name, price } = req.body;
-  res.send(`Crear producto con el id: ${id}, name: ${name}, price: ${price}`);
-};
+export const createProduct = (req: Request, res: Response): void => {
+  const { id, name, price }: { id: number, name: string, price: number } = req.body
+  res.send(`Crear producto con el id: ${id}, name: ${name}, price: ${price}`)
+}
 
-const update_product = (_: Request, res: Response) => {
-  res.send("Actualizar producto");
-};
+export const updateProduct = (_: Request, res: Response): void => {
+  res.send('Actualizar producto')
+}
 
-const delete_product = (_: Request, res: Response) => {
-  res.send("Eliminar producto");
-};
-
-export const products_handlers = {
-  get_all_products,
-  get_one_product,
-  create_product,
-  update_product,
-  delete_product,
-};
+export const deleteProduct = (_: Request, res: Response): void => {
+  res.send('Eliminar producto')
+}

@@ -1,24 +1,16 @@
-import { Router } from "express";
-import { products_handlers } from "../handlers/products";
+import { Router } from 'express'
+import * as productsHandlers from '../handlers/products'
 
-const {
-  get_all_products,
-  get_one_product,
-  create_product,
-  update_product,
-  delete_product,
-} = products_handlers;
+const productsRouter = Router()
 
-const products_router = Router();
+productsRouter.get('/', productsHandlers.getAllProducts)
 
-products_router.get("/", get_all_products);
+productsRouter.get('/:id', productsHandlers.getOneProduct)
 
-products_router.get("/:id", get_one_product);
+productsRouter.post('/', productsHandlers.createProduct)
 
-products_router.post("/", create_product);
+productsRouter.put('/:id', productsHandlers.updateProduct)
 
-products_router.put("/:id", update_product);
+productsRouter.delete('/:id', productsHandlers.deleteProduct)
 
-products_router.delete("/:id", delete_product);
-
-export default products_router;
+export default productsRouter

@@ -1,10 +1,10 @@
-import { Router } from "express";
-import products_router from "./products";
-import users_router from "./users";
+import { Router } from 'express'
+import productsRouter from './products'
+import usersRouter from './users'
 
-const main_router = Router();
+const mainRouter = Router()
 
-main_router.use("/users", users_router);
-main_router.use("/products", products_router);
+mainRouter.use('/users', usersRouter)
+mainRouter.use('/products', productsRouter)
 
-export default main_router;
+export default mainRouter

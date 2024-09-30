@@ -7,25 +7,28 @@
     "start": "node build/index.js",
     "tsc": "tsc",
     "dev": "nodemon index.js",
+    "lint": "ts-standard",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "morgan": "^1.10.0",
-    "nodemon": "^3.1.7"
+    "dotenv": "16.4.5",
+    "express": "4.21.0",
+    "morgan": "1.10.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.11.1",
-    "@types/express": "^5.0.0",
-    "@types/morgan": "^1.9.9",
-    "eslint": "^9.11.1",
-    "globals": "^15.9.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.7.0"
-  }
+    "@types/express": "5.0.0",
+    "@types/morgan": "1.9.9",
+    "nodemon": "3.1.7",
+    "ts-node": "10.9.2",
+    "ts-standard": "12.0.2",
+    "typescript": "5.6.2"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "./node_modules/ts-standard/eslintrc.json"}
 }

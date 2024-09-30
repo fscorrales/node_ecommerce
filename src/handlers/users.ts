@@ -1,45 +1,38 @@
-import { Request, Response } from "express";
-import { users_controllers } from "../controllers/users";
+import { Request, Response } from 'express'
+import * as usersControllers from '../controllers/users'
+import { UsersEntry } from '../types'
 
-const { getAllUsersController } = users_controllers;
+export const createUser = (_req: Request, res: Response): void => {
+  // const { id, username, email, password, role } = req.body
+  // res.send(`Crear usuario con el id: ${id}, username: ${username},
+  //   email: ${email}, password: ${password}, role: ${role}`)
+  res.send('Crear usuario')
+}
 
-const create_user = (req: Request, res: Response) => {
-  const { id, username, email, password, role } = req.body;
-  res.send(`Crear usuario con el id: ${id}, username: ${username}, 
-    email: ${email}, password: ${password}, role: ${role}`);
-};
-
-const get_all_users = (req: Request, res: Response) => {
-  const { username } = req.query;
-  if (username) {
-    res.send(`Mostrar usuarios con el nombre: ${username}`);
+export const getAllUsers = (req: Request, res: Response): void => {
+  const { username } = req.query as { username?: string }
+  if ((username?.toString().trim() ?? '') !== '') {
+    res.send(`Mostrar usuarios con el nombre: ${username ?? ''}`)
   } else {
-    const allUsers = getAllUsersController();
+    const allUsers: UsersEntry[] = usersControllers.getAllUsersController()
     // Verificar si hay usuarios
-    if (!allUsers || allUsers.length === 0) {
-      return res.status(404).send("No hay usuarios disponibles.");
+    if (allUsers.length === 0) {
+      res.status(404).send('No hay usuarios disponibles.')
+    } else {
+      res.send(allUsers) // Enviar todos los usuarios
     }
-    res.send(allUsers); // Enviar todos los usuarios
   }
-};
+}
 
-const get_one_user = (req: Request, res: Response) => {
-  const { id } = req.params;
-  res.send(`Mostrar usuario con el id: ${id}`);
-};
+export const getOneUser = (req: Request, res: Response): void => {
+  const { id } = req.params
+  res.send(`Mostrar usuario con el id: ${id}`)
+}
 
-const update_user = (_: Request, res: Response) => {
-  res.send("Actualizar usuario");
-};
+export const updateUser = (_: Request, res: Response): void => {
+  res.send('Actualizar usuario')
+}
 
-const delete_user = (_: Request, res: Response) => {
-  res.send("Eliminar usuario");
-};
-
-export const users_handlers = {
-  create_user,
-  get_all_users,
-  get_one_user,
-  update_user,
-  delete_user,
-};
+export const deleteUser = (_: Request, res: Response): void => {
+  res.send('Eliminar usuario')
+}

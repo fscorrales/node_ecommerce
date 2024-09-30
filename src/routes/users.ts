@@ -1,19 +1,16 @@
-import { Router } from "express";
-import { users_handlers } from "../handlers/users";
+import { Router } from 'express'
+import * as usersHandlers from '../handlers/users'
 
-const { create_user, get_all_users, get_one_user, update_user, delete_user } =
-  users_handlers;
+const usersRouter: Router = Router()
 
-const users_router: Router = Router();
+usersRouter.post('/', usersHandlers.createUser)
 
-users_router.post("/", create_user);
+usersRouter.get('/', usersHandlers.getAllUsers)
 
-users_router.get("/", get_all_users);
+usersRouter.get('/:id', usersHandlers.getOneUser)
 
-users_router.get("/:id", get_one_user);
+usersRouter.put('/:id', usersHandlers.updateUser)
 
-users_router.put("/:id", update_user);
+usersRouter.delete('/:id', usersHandlers.deleteUser)
 
-users_router.delete("/:id", delete_user);
-
-export default users_router;
+export default usersRouter

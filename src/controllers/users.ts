@@ -1,5 +1,5 @@
-import users_db from "../db/users.json";
-import { UsersEntry } from "../types";
+import users_db from '../db/users.json'
+import { UsersEntry } from '../types'
 
 // Controlador para crear un nuevo usuario
 // const createUserController = (name, username, email) => {
@@ -9,8 +9,8 @@ import { UsersEntry } from "../types";
 //   return newUser;
 // };
 
-const users: Array<UsersEntry> = users_db as Array<UsersEntry>; // Controlador para obtener todos los usuarios
-export const getAllUsersController = () => users;
+const users: UsersEntry[] = users_db as UsersEntry[] // Controlador para obtener todos los usuarios
+export const getAllUsersController = (): UsersEntry[] => users
 
 // // Controlador para obtener un usuario por nombre
 // const getOneUserController = (name) => {
