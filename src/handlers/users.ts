@@ -1,4 +1,7 @@
 import { Request, Response } from "express";
+import { users_controllers } from "../controllers/users";
+
+const { getAllUsersController } = users_controllers;
 
 const create_user = (req: Request, res: Response) => {
   const { id, username, email, password, role } = req.body;
@@ -11,7 +14,12 @@ const get_all_users = (req: Request, res: Response) => {
   if (username) {
     res.send(`Mostrar usuarios con el nombre: ${username}`);
   } else {
-    res.send("Mostrar todos los usuarios");
+    const allUsers = getAllUsersController();
+    // Verificar si hay usuarios
+    if (!allUsers || allUsers.length === 0) {
+      return res.status(404).send("No hay usuarios disponibles.");
+    }
+    res.send(allUsers); // Enviar todos los usuarios
   }
 };
 
