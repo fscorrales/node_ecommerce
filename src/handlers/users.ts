@@ -9,7 +9,7 @@ export const createUser = (_req: Request, res: Response): void => {
   res.send('Crear usuario')
 }
 
-export const getAllUsers = (req: Request, res: Response): void => {
+export const getAllActiveUsers = (req: Request, res: Response): void => {
   const { username } = req.query as { username?: string }
   if ((username?.toString().trim() ?? '') !== '') {
     res.send(`Mostrar usuarios con el nombre: ${username ?? ''}`)

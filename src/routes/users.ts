@@ -5,7 +5,11 @@ const usersRouter: Router = Router()
 
 usersRouter.post('/', usersHandlers.createUser)
 
-usersRouter.get('/', usersHandlers.getAllUsers)
+usersRouter.get('/', usersHandlers.getAllActiveUsers)
+
+// usersRouter.get('/deleted', usersHandlers.getAllDeletedUsers)
+
+// usersRouter.get('/include_deleted', usersHandlers.getAllUsers)
 
 usersRouter.get('/:id', usersHandlers.getOneUser)
 
