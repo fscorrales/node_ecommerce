@@ -1,4 +1,5 @@
 import { Router } from 'express'
+// import { authorizeAdmin, verifyToken } from '../middleware/auth'
 import * as usersHandlers from '../handlers/users'
 
 const usersRouter: Router = Router()

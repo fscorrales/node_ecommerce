@@ -9,12 +9,12 @@ export const createUser = (_req: Request, res: Response): void => {
   res.send('Crear usuario')
 }
 
-export const getAllActiveUsers = (req: Request, res: Response): void => {
+export const getAllActiveUsers = async (req: Request, res: Response): Promise<void> => {
   const { username } = req.query as { username?: string }
   if ((username?.toString().trim() ?? '') !== '') {
     res.send(`Mostrar usuarios con el nombre: ${username ?? ''}`)
   } else {
-    const allUsers: UsersEntry[] = usersControllers.getAllUsersController()
+    const allUsers: UsersEntry[] = await usersControllers.getAllUsersController()
     // Verificar si hay usuarios
     if (allUsers.length === 0) {
       res.status(404).send('No hay usuarios disponibles.')

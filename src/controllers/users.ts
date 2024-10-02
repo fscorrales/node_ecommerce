@@ -1,5 +1,5 @@
-import users_db from '../db/users.json'
-import { UsersEntry } from '../types'
+import Users from '../models/users'
+import { PrivateStoredUser } from '../types'
 
 // Controlador para crear un nuevo usuario
 // const createUserController = (name, username, email) => {
@@ -9,9 +9,10 @@ import { UsersEntry } from '../types'
 //   return newUser;
 // };
 
-const users: UsersEntry[] = users_db as UsersEntry[] // Controlador para obtener todos los usuarios
-export const getAllUsersController = (): UsersEntry[] => users
-
+// const users: UsersEntry[] = users_db as UsersEntry[] // Controlador para obtener todos los usuarios
+export const getAllUsersController = async (): Promise<PrivateStoredUser[]> => {
+  return await Users.find({})
+}
 // // Controlador para obtener un usuario por nombre
 // const getOneUserController = (name) => {
 //   const oneUser = users.filter((user) => user.name === name);
