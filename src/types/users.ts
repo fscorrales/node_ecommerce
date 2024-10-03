@@ -4,10 +4,17 @@ type role = creationRole | 'admin'
 export interface BaseUser {
   username: string
   email: string
-  image?: string
+  image?: string | null
 }
 
-export interface CreationUser extends BaseUser {
+// Chequear el tema de los nulos porque no debería estar vacio
+export interface UpdateUser {
+  username?: string | null
+  email?: string | null
+  image?: string | null
+}
+
+export interface CreateUser extends BaseUser {
   password: string
   role: creationRole
 }
@@ -18,19 +25,10 @@ export interface LoginUser {
 }
 
 export interface PublicStoredUser extends BaseUser {
-  id: number
   role: role
   desactivated_at?: Date
 }
 
 export interface PrivateStoredUser extends PublicStoredUser {
-  password: string // Cambiar a hash_password
-}
-
-export interface UsersEntry {
-  id: number
-  username: string
-  email: string
-  password: string
-  role: role
+  hash_password: string
 }

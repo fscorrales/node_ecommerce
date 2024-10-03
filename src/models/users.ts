@@ -23,7 +23,13 @@ const userSchema = new mongoose.Schema({
   image: {
     type: String,
     required: false
+  },
+  deactivated_at: {
+    type: Date,
+    required: false
   }
+}, {
+  versionKey: false
 })
 
 export default mongoose.model('User', userSchema)
