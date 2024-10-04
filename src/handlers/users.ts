@@ -37,9 +37,14 @@ export const getAllActive = async (req: Request, res: Response): Promise<void> =
   }
 }
 
-export const getOne = (req: Request, res: Response): void => {
-  const { id } = req.params
-  res.send(`Mostrar usuario con el id: ${id}`)
+export const getOne = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const user = await usersControllers.getOne(id)
+    res.status(200).json(user)
+  } catch (error: any) {
+    res.status(500).send(error.message)
+  }
 }
 
 export const updateOne = async (req: Request, res: Response): Promise<void> => {

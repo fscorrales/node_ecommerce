@@ -1,6 +1,7 @@
 import { Router } from 'express'
 // import { authorizeAdmin, verifyToken } from '../middleware/auth'
-import { validateCreate } from '../validators/users'
+import { validateObjectId } from '../validators/main'
+import { validateCreate, validateUpdate } from '../validators/users'
 import { createOne, getAllActive, getOne, updateOne, deleteOne, deleteOneForever } from '../handlers/users'
 
 const usersRouter: Router = Router()
@@ -13,12 +14,12 @@ usersRouter.get('/', getAllActive)
 
 // usersRouter.get('/include_deleted', usersHandlers.getAllUsers)
 
-usersRouter.get('/:id', getOne)
+usersRouter.get('/:id', validateObjectId, getOne)
 
-usersRouter.put('/:id', updateOne)
+usersRouter.put('/:id', validateObjectId, validateUpdate, updateOne)
 
-usersRouter.delete('/:id', deleteOne)
+usersRouter.delete('/:id', validateObjectId, deleteOne)
 
-usersRouter.delete('/delete_forever/:id', deleteOneForever)
+usersRouter.delete('/delete_forever/:id', validateObjectId, deleteOneForever)
 
 export default usersRouter

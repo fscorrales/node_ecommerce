@@ -23,6 +23,16 @@ export const getAll = async (): Promise<PrivateStoredUser[]> => {
   return await Users.find({})
 }
 
+export const getOne = async (id: string): Promise<PublicStoredUser> => {
+  const user = await Users.findById(id).lean()
+
+  if (user == null) {
+    throw new Error('User not found')
+  }
+  const { hash_password: _, ...userWithoutPassword } = user
+  return userWithoutPassword
+}
+
 export const updateOne = async (id: string, UpdateUser: UpdateUser): Promise<PublicStoredUser> => {
   const existedUser = await Users.findOne({
     $or: [
