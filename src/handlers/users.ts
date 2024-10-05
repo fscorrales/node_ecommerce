@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as usersControllers from '../controllers/users'
-import { PrivateStoredUser } from '../types'
+import { PublicStoredUser } from '../types'
 
 export const createOne = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -13,17 +13,48 @@ export const createOne = async (req: Request, res: Response): Promise<void> => {
 
 export const getAllActive = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username } = req.query as { username?: string }
-    if ((username?.toString().trim() ?? '') !== '') {
-      res.send(`Mostrar usuarios con el nombre: ${username ?? ''}`)
+    const allUsers: PublicStoredUser[] = await usersControllers.getAllActiveCtrl(req.query)
+    // Verificar si hay usuarios
+    if (allUsers.length === 0) {
+      res.status(404).send('No hay usuarios disponibles.')
     } else {
-      const allUsers: PrivateStoredUser[] = await usersControllers.getAllCtrl()
-      // Verificar si hay usuarios
-      if (allUsers.length === 0) {
-        res.status(404).send('No hay usuarios disponibles.')
-      } else {
-        res.send(allUsers) // Enviar todos los usuarios
-      }
+      res.send(allUsers) // Enviar todos los usuarios
+    }
+  } catch (error: any) {
+    // Manejar cualquier error inesperado
+    console.error(error.message)
+    res
+      .status(500)
+      .send('Ocurrió un error inesperado. Intente nuevamente más tarde.')
+  }
+}
+
+export const getAllDeleted = async (_: Request, res: Response): Promise<void> => {
+  try {
+    const allUsers: PublicStoredUser[] = await usersControllers.getAllDeletedCtrl()
+    // Verificar si hay usuarios
+    if (allUsers.length === 0) {
+      res.status(404).send('No hay usuarios disponibles.')
+    } else {
+      res.send(allUsers) // Enviar todos los usuarios
+    }
+  } catch (error: any) {
+    // Manejar cualquier error inesperado
+    console.error(error.message)
+    res
+      .status(500)
+      .send('Ocurrió un error inesperado. Intente nuevamente más tarde.')
+  }
+}
+
+export const getAll = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const allUsers: PublicStoredUser[] = await usersControllers.getAllCtrl(req.query)
+    // Verificar si hay usuarios
+    if (allUsers.length === 0) {
+      res.status(404).send('No hay usuarios disponibles.')
+    } else {
+      res.send(allUsers) // Enviar todos los usuarios
     }
   } catch (error: any) {
     // Manejar cualquier error inesperado

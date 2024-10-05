@@ -19,7 +19,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const token = await loginCtrl(req.body)
-    console.log(token)
     res
       .cookie('access_token', token
       //   {

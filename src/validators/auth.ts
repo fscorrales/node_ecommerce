@@ -2,7 +2,7 @@ import { body } from 'express-validator'
 import { validateResult } from './main'
 import { Request, Response, NextFunction } from 'express'
 
-export const validateCreate = [
+export const validateRegister = [
   body('username')
     .exists().withMessage('Username is required')
     .not().isEmpty().withMessage('Username cannot be empty')
@@ -18,7 +18,7 @@ export const validateCreate = [
     .not().isEmpty().withMessage('Password cannot be empty'),
   body('role')
     .exists().withMessage('Role is required')
-    .isIn(['seller', 'customer', 'admin']).withMessage('Role must be either seller, customer or admin'),
+    .isIn(['seller', 'customer']).withMessage('Role must be either seller or customer'),
   body('image')
     .optional() // optional field
     .not().isEmpty().withMessage('Image cannot be empty')
@@ -29,22 +29,16 @@ export const validateCreate = [
   }
 ]
 
-export const validateUpdate = [
+export const validateLogin = [
   body('username')
-    .optional() // optional field
+    .exists().withMessage('Username is required')
     .not().isEmpty().withMessage('Username cannot be empty')
-    .isString().withMessage('Image must be a string')
+    .isString().withMessage('Username must be a string')
     .escape()
     .trim(), // Sanitize: elimina espacios en blanco,
-  body('email')
-    .optional() // optional field
-    .isEmail().withMessage('Email must be valid')
-    .normalizeEmail(), // Sanitize: normaliza el formato de correo electrónico
-  body('image')
-    .optional() // optional field
-    .not().isEmpty().withMessage('Image cannot be empty')
-    .isString().withMessage('Image must be a string')
-    .trim(), // Sanitize: elimina espacios en blanco,
+  body('password')
+    .exists().withMessage('Password is required')
+    .not().isEmpty().withMessage('Password cannot be empty'),
   (req: Request, res: Response, next: NextFunction) => {
     validateResult(req, res, next)
   }

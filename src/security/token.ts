@@ -13,12 +13,12 @@ const generateToken = (id: string, role: string): string => {
 const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   try {
     const token = req.cookies.access_token
-    if (typeof token === 'string' && token !== '') {
-      verify(token, JWT_SECRET)
+    const payload = verify(token, JWT_SECRET) as JwtPayload
+    if ((payload.exp ?? 0) > (payload.iat ?? 0)) {
       // Continuar con la siguiente función
       next()
     } else {
-      res.status(403).send('Token requerido para la autenticación')
+      res.status(401).json({ error: 'Token expirado' })
     }
   } catch (error) {
     res.status(401).json({ error: 'Token invalido' })
@@ -45,7 +45,7 @@ const authorizeAdminOrSameUser = (req: Request, res: Response, next: NextFunctio
   if (user.role !== 'admin' && user.id !== id) {
     res
       .status(403)
-      .send('Acceso denegado: Se requieren privilegios de administrador')
+      .send('Acceso denegado: Solo el propio usuario tiene permisos o el administrador')
   } else {
     // Si el usuario es admin, permitir que continúe
     next()

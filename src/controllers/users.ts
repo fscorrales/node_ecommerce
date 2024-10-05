@@ -1,5 +1,5 @@
 import Users from '../models/users'
-import { CreateUser, PrivateStoredUser, PublicStoredUser, UpdateUser } from '../types'
+import { CreateUser, PrivateStoredUser, PublicStoredUser, UpdateUser, QueryUser } from '../types'
 import { encrypt } from '../security/password'
 
 // Controlador para crear un nuevo usuario
@@ -20,8 +20,19 @@ export const createOneCtrl = async (user: CreateUser): Promise<PrivateStoredUser
 }
 
 // Controlador para obtener todos los usuarios
-export const getAllCtrl = async (): Promise<PrivateStoredUser[]> => {
-  return await Users.find({})
+export const getAllActiveCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+  const users = await Users.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
+  return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
+}
+
+export const getAllDeletedCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+  const users = await Users.find({ deactivated_at: { $ne: null }, ...queryUser }).lean()
+  return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
+}
+
+export const getAllCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+  const users = await Users.find(queryUser).lean()
+  return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
 export const getOne = async (id: string): Promise<PublicStoredUser> => {

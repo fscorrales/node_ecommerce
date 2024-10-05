@@ -32,4 +32,12 @@ const userSchema = new mongoose.Schema({
   versionKey: false
 })
 
+userSchema.statics.getDeleted = function () {
+  return this.find({ deactivated_at: { $ne: null } })
+}
+
+userSchema.statics.getNotDeleted = function () {
+  return this.find({ deactivated_at: { $eq: null } })
+}
+
 export default mongoose.model('User', userSchema)

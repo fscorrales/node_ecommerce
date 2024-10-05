@@ -14,6 +14,11 @@ export interface UpdateUser {
   image?: string | null
 }
 
+export interface QueryUser extends UpdateUser {
+  _id?: string
+  role?: role
+}
+
 export interface CreateUser extends BaseUser {
   password: string
   role: creationRole
