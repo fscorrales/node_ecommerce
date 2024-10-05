@@ -1,25 +1,26 @@
 import Users from '../models/users'
 import { CreateUser, PrivateStoredUser, PublicStoredUser, UpdateUser } from '../types'
+import { encrypt } from '../security/password'
 
 // Controlador para crear un nuevo usuario
-export const createOne = async (CreationUser: CreateUser): Promise<PrivateStoredUser> => {
+export const createOneCtrl = async (user: CreateUser): Promise<PrivateStoredUser> => {
   const existedUser = await Users.findOne({
     $or: [
-      { email: CreationUser.email },
-      { username: CreationUser.username }
+      { email: user.email },
+      { username: user.username }
     ]
   })
   if (existedUser != null) {
     throw new Error('User already exists')
   }
-  const hashPassword = CreationUser.password
-  const { password: _, ...userWithoutPassword } = CreationUser
+  const hashPassword = await encrypt(user.password)
+  const { password: _, ...userWithoutPassword } = user
   const newUser = await Users.create({ ...userWithoutPassword, hash_password: hashPassword })
   return newUser
 }
 
 // Controlador para obtener todos los usuarios
-export const getAll = async (): Promise<PrivateStoredUser[]> => {
+export const getAllCtrl = async (): Promise<PrivateStoredUser[]> => {
   return await Users.find({})
 }
 
@@ -33,11 +34,11 @@ export const getOne = async (id: string): Promise<PublicStoredUser> => {
   return userWithoutPassword
 }
 
-export const updateOne = async (id: string, UpdateUser: UpdateUser): Promise<PublicStoredUser> => {
+export const updateOneCtrl = async (id: string, user: UpdateUser): Promise<PublicStoredUser> => {
   const existedUser = await Users.findOne({
     $or: [
-      { email: UpdateUser.email },
-      { username: UpdateUser.username }
+      { email: user.email },
+      { username: user.username }
     ],
     _id: { $ne: id }
   }
@@ -47,7 +48,7 @@ export const updateOne = async (id: string, UpdateUser: UpdateUser): Promise<Pub
   }
 
   const userUpdated = await Users.findByIdAndUpdate(
-    id, UpdateUser, { new: true }
+    id, user, { new: true }
   ).lean()
 
   if (userUpdated == null) {
@@ -57,7 +58,7 @@ export const updateOne = async (id: string, UpdateUser: UpdateUser): Promise<Pub
   return userUpdatedWithoutPassword
 }
 
-export const deleteOne = async (id: string): Promise<PublicStoredUser> => {
+export const deleteOneCtrl = async (id: string): Promise<PublicStoredUser> => {
   const userDeleted = await Users.findByIdAndUpdate(
     id, { deactivated_at: Date.now() }, { new: true }
   ).lean()
@@ -69,7 +70,7 @@ export const deleteOne = async (id: string): Promise<PublicStoredUser> => {
   return userDeletedWithoutPassword
 }
 
-export const deleteOneForever = async (id: string): Promise<PublicStoredUser> => {
+export const deleteOneForeverCtrl = async (id: string): Promise<PublicStoredUser> => {
   const userDeleted = await Users.findByIdAndDelete(id).lean()
 
   if (userDeleted == null) {

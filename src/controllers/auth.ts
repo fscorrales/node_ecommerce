@@ -1,45 +1,30 @@
-// import bcrypt from 'bcryptjs'
-// import { users_db } from '../db/test_db'
-// import { JWT_SECRET, SALT_ROUND } from '../../config'
-// import { CreationUser, LoginUser, PrivateStoredUser } from '../types'
-// import jwt from 'jsonwebtoken'
+import { CreateUser, LoginUser, PrivateStoredUser } from '../types'
+import { createOneCtrl } from './users'
+import Users from '../models/users'
+import { verified } from '../security/password'
+import { generateToken } from '../security/token'
 
-// // Controlador para registrarse
-// export const registerController = async (CreationUser: CreationUser): Promise<PrivateStoredUser> => {
-//   const userExists = users_db.some((user) => user.email === CreationUser.email)
-//   if (userExists) {
-//     throw new Error('Usuario registrado')
-//   }
-//   const id = Math.max(...users_db.map((user) => user.id)) + 1
-//   const hashedPassword = await bcrypt.hash(CreationUser.password, SALT_ROUND)
-//   const newUser: PrivateStoredUser = { id, ...CreationUser, password: hashedPassword }
-//   users_db.push(newUser)
-//   return newUser
-// }
+// Controlador para registrarse
+export const registerCtrl = async (user: CreateUser): Promise<PrivateStoredUser> => {
+  const newUser = await createOneCtrl(user)
+  return newUser
+}
 
-// // Controlador para iniciar sesión (login)
-// export const loginController = async (LoginUser: LoginUser): Promise<PrivateStoredUser> => {
-//   // Buscar si el usuario con el email proporcionado existe en el arreglo de users
-//   const user = users_db.find((user) => user.username === LoginUser.username)
-//   if (user == null) {
-//     throw new Error('Usuario no encontrado')
-//   }
-//   // Comparar la contraseña recibida sin hashear con la contraseña hasheada almacenada
-//   const isPasswordMatch = await bcrypt.compare(LoginUser.password, user.password)
-//   if (!isPasswordMatch) {
-//     throw new Error('Contraseña incorrecta')
-//   }
-//   // Crear un token JWT con el id del usuario y el rol
-//   const token = jwt.sign(
-//     { id: user.id, role: user.role },
-//     JWT_SECRET, // Debes tener una clave secreta segura
-//     { expiresIn: '1h' }
-//   )
-//   // Eliminar la contraseña antes de devolver la respuesta
-//   const { password: _, ...userWithoutPassword } = user
-//   // Si todo coincide, retornar el usuario
-//   return {
-//     token, // Devolver el token en la respuesta
-//     user: userWithoutPassword
-//   }
-// }
+// Controlador para iniciar sesión (login)
+export const loginCtrl = async (user: LoginUser): Promise<string> => {
+  // Buscar si el usuario con el email proporcionado existe en el arreglo de users
+  const existedUser = await Users.findOne({ username: user.username }).lean()
+
+  if (existedUser == null) {
+    throw new Error('Usuario no encontrado')
+  }
+  // Comparar la contraseña recibida sin hashear con la contraseña hasheada almacenada
+  const isPasswordMatch = await verified(user.password, existedUser.hash_password)
+  if (!isPasswordMatch) {
+    throw new Error('Contraseña incorrecta')
+  }
+  // Crear un token JWT con el id del usuario y el rol
+  const token = generateToken(existedUser._id.toString(), existedUser.role)
+  // Si todo coincide, retornar el usuario
+  return token
+}

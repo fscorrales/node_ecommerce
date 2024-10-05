@@ -1,22 +1,22 @@
-import { check } from 'express-validator'
+import { body } from 'express-validator'
 import { validateResult } from './main'
 import { Request, Response, NextFunction } from 'express'
 
 export const validateCreate = [
-  check('username')
+  body('username')
     .exists().withMessage('Username is required')
     .not().isEmpty().withMessage('Username cannot be empty')
     .isString().withMessage('Username must be a string'),
-  check('email')
+  body('email')
     .exists().withMessage('Email is required')
     .isEmail().withMessage('Email must be valid'),
-  check('password')
+  body('password')
     .exists().withMessage('Password is required')
     .not().isEmpty().withMessage('Password cannot be empty'),
-  check('role')
+  body('role')
     .exists().withMessage('Role is required')
     .isIn(['seller', 'customer']).withMessage('Role must be either seller or customer'),
-  check('image')
+  body('image')
     .optional() // optional field
     .not().isEmpty().withMessage('Image cannot be empty')
     .isString().withMessage('Image must be a string'),
@@ -26,14 +26,14 @@ export const validateCreate = [
 ]
 
 export const validateUpdate = [
-  check('username')
+  body('username')
     .optional() // optional field
     .not().isEmpty().withMessage('Username cannot be empty')
     .isString().withMessage('Image must be a string'),
-  check('email')
+  body('email')
     .optional() // optional field
     .isEmail().withMessage('Email must be valid'),
-  check('image')
+  body('image')
     .optional() // optional field
     .not().isEmpty().withMessage('Image cannot be empty')
     .isString().withMessage('Image must be a string'),

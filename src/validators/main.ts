@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { validationResult, check } from 'express-validator'
+import { validationResult, param } from 'express-validator'
 import { ObjectId } from 'mongodb'
 
 export const validateResult = (
@@ -15,7 +15,7 @@ export const validateResult = (
 }
 
 export const validateObjectId = [
-  check('id')
+  param('id')
     .exists().withMessage('ID is required')
     .not().isEmpty().withMessage('ID cannot be empty')
     .custom((value) => {

@@ -5,13 +5,3 @@ export type UpdateUser = UserTypes.UpdateUser
 export type LoginUser = UserTypes.LoginUser
 export type PublicStoredUser = UserTypes.PublicStoredUser
 export type PrivateStoredUser = UserTypes.PrivateStoredUser
-
-// type role = 'seller' | 'admin' | 'customer'
-
-// export interface UsersEntry {
-//   id: number
-//   username: string
-//   email: string
-//   password: string
-//   role: role
-// }

@@ -1,10 +1,10 @@
-// import { Router } from 'express'
-// import * as authHandlers from '../handlers/auth'
+import { Router } from 'express'
+import { register, login, logout } from '../handlers/auth'
 
-// const authRoutes = Router()
+const authRoutes = Router()
 
-// authRoutes.post('/register', authHandlers.register)
-// authRoutes.post('/login', authHandlers.login)
-// authRoutes.post('/loginout', authHandlers.logout)
+authRoutes.post('/register', register)
+authRoutes.post('/login', login)
+authRoutes.post('/logout', logout)
 
-// module.exports = authRoutes
+export default authRoutes
