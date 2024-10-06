@@ -10,3 +10,14 @@ export const connectDB = async (): Promise<void> => {
     throw Error('MongoDB connection failed!')
   }
 }
+
+const db = mongoose.connection
+
+db.on('error', () => {
+  console.log('MongoDB connection error. Please make sure MongoDB is running.')
+  process.exit(1)
+})
+
+db.once('open', () => {
+  console.log('MongoDB connected successfully!')
+})

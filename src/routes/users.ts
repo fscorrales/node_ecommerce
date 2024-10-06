@@ -1,5 +1,4 @@
 import { Router } from 'express'
-// import { authorizeAdmin, verifyToken } from '../middleware/auth'
 import { validateObjectId } from '../validators/main'
 import { validateCreate, validateUpdate } from '../validators/users'
 import { createOne, getAllActive, getAllDeleted, getAll, getOne, updateOne, deleteOne, deleteOneForever } from '../handlers/users'

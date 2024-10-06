@@ -1,16 +1,18 @@
 import { Router } from 'express'
-import * as productsHandlers from '../handlers/products'
+import { getOne, getAll, createOne, updateOne, deleteOne } from '../handlers/products'
+import { validateCreate, validateQuery } from '../validators/products'
+import { validateObjectId } from '../validators/main'
 
 const productsRouter = Router()
 
-productsRouter.get('/', productsHandlers.getAllProducts)
+productsRouter.get('/', validateQuery, getAll)
 
-productsRouter.get('/:id', productsHandlers.getOneProduct)
+productsRouter.get('/:id', validateObjectId, getOne)
 
-productsRouter.post('/', productsHandlers.createProduct)
+productsRouter.post('/', validateCreate, createOne)
 
-productsRouter.put('/:id', productsHandlers.updateProduct)
+productsRouter.put('/:id', validateObjectId, updateOne)
 
-productsRouter.delete('/:id', productsHandlers.deleteProduct)
+productsRouter.delete('/:id', validateObjectId, deleteOne)
 
 export default productsRouter

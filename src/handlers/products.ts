@@ -1,23 +1,37 @@
 import { Request, Response } from 'express'
+import { createOneCtrl, getAllCtrl } from '../controllers/products'
 
-export const getAllProducts = (_: Request, res: Response): void => {
-  res.send('Mostrar todos los productos')
+export const getAll = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const allProducts = await getAllCtrl(req.query)
+    if (allProducts.length === 0) {
+      res.status(404).send('No hay productos disponibles.')
+    } else {
+      res.send(allProducts) // Enviar todos los usuarios
+    }
+  } catch (error: any) {
+    // Manejar cualquier error inesperado
+    console.error(error.message)
+    res
+      .status(500)
+      .send('Ocurrió un error inesperado. Intente nuevamente más tarde.')
+  }
 }
 
-export const getOneProduct = (req: Request, res: Response): void => {
+export const getOne = (req: Request, res: Response): void => {
   const { id } = req.params
   res.send(`Mostrar producto con el id: ${id}`)
 }
 
-export const createProduct = (req: Request, res: Response): void => {
-  const { id, name, price }: { id: number, name: string, price: number } = req.body
-  res.send(`Crear producto con el id: ${id}, name: ${name}, price: ${price}`)
+export const createOne = (req: Request, res: Response): void => {
+  const newProduct = createOneCtrl(req.body)
+  res.send(newProduct)
 }
 
-export const updateProduct = (_: Request, res: Response): void => {
+export const updateOne = (_: Request, res: Response): void => {
   res.send('Actualizar producto')
 }
 
-export const deleteProduct = (_: Request, res: Response): void => {
+export const deleteOne = (_: Request, res: Response): void => {
   res.send('Eliminar producto')
 }

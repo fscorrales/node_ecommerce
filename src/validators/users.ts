@@ -33,7 +33,7 @@ export const validateUpdate = [
   body('username')
     .optional() // optional field
     .not().isEmpty().withMessage('Username cannot be empty')
-    .isString().withMessage('Image must be a string')
+    .isString().withMessage('Username must be a string')
     .escape()
     .trim(), // Sanitize: elimina espacios en blanco,
   body('email')

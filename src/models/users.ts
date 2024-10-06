@@ -40,4 +40,4 @@ userSchema.statics.getNotDeleted = function () {
   return this.find({ deactivated_at: { $eq: null } })
 }
 
-export default mongoose.model('User', userSchema)
+export default mongoose.model('users', userSchema)
