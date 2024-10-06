@@ -47,7 +47,12 @@ export interface IPrivateStoredUser extends IPublicStoredUser {
   hash_password: string
 }
 
-const userSchema = new mongoose.Schema<IUser>({
+interface UserModel extends mongoose.Model<IUser> {
+  getDeleted: (queryUser?: IQueryUser) => Promise<IPrivateStoredUser[]>
+  getNotDeleted: (queryUser?: IQueryUser) => Promise<IPrivateStoredUser[]>
+}
+
+const userSchema = new mongoose.Schema<IUser, UserModel>({
   username: {
     type: String,
     unique: true,
@@ -76,15 +81,15 @@ const userSchema = new mongoose.Schema<IUser>({
     required: false
   }
 }, {
+  statics: {
+    getDeleted: function (queryUser: IQueryUser = {}) {
+      return this.find({ deactivated_at: { $ne: null }, ...queryUser }).lean()
+    },
+    getNotDeleted: function (queryUser: IQueryUser = {}) {
+      return this.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
+    }
+  },
   versionKey: false
 })
 
-userSchema.statics.getDeleted = function () {
-  return this.find({ deactivated_at: { $ne: null } })
-}
-
-userSchema.statics.getNotDeleted = function () {
-  return this.find({ deactivated_at: { $eq: null } })
-}
-
-export const Users = mongoose.model('users', userSchema)
+export const Users = mongoose.model<IUser, UserModel>('users', userSchema)

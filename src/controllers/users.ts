@@ -20,12 +20,13 @@ export const createOneCtrl = async (user: ICreateUser): Promise<IPrivateStoredUs
 
 // Controlador para obtener todos los usuarios
 export const getAllActiveCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
-  const users = await Users.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
+  // const users = await Users.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
+  const users = await Users.getNotDeleted(queryUser)
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
 export const getAllDeletedCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
-  const users = await Users.find({ deactivated_at: { $ne: null }, ...queryUser }).lean()
+  const users = await Users.getDeleted(queryUser)
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
@@ -89,14 +90,3 @@ export const deleteOneForeverCtrl = async (id: string): Promise<IPublicStoredUse
   const { hash_password: _, ...userDeletedWithoutPassword } = userDeleted
   return userDeletedWithoutPassword
 }
-// // Controlador para obtener un usuario por nombre
-// const getOneUserController = (name) => {
-//   const oneUser = users.filter((user) => user.name === name);
-//   return oneUser;
-// };
-
-// // Controlador para obtener un usuario por ID
-// const getUserByIdController = (id) => {
-//   const userById = users.find((usuario) => usuario.id === Number(id));
-//   return userById;
-// };
