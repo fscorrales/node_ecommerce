@@ -1,14 +1,11 @@
 import mongoose from 'mongoose'
 
-export interface IUpdateProduct {
+export interface IQueryProduct {
   name?: string | null
   description?: string | null
   price?: number
   quantity?: number
   image?: string | null
-}
-
-export interface IQueryProduct extends IUpdateProduct {
   seller_id?: mongoose.Types.ObjectId
 }
 

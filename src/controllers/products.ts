@@ -1,5 +1,6 @@
-import { Products, IProduct, IQueryProduct, IStoredProduct, IUpdateProduct } from '../models/products'
+import { Products, IProduct, IQueryProduct, IStoredProduct } from '../models/products'
 import { Users } from '../models/users'
+
 // Controlador para crear un nuevo usuario
 export const createOneCtrl = async (product: IProduct): Promise<IStoredProduct> => {
   const existedUser = await Users.findById(product.seller_id)
@@ -32,9 +33,10 @@ export const getOneCtrl = async (id: string): Promise<IStoredProduct> => {
   return product
 }
 
-export const updateOneCtrl = async (id: string, product: IUpdateProduct): Promise<IStoredProduct> => {
+export const updateOneCtrl = async (id: string, product: IQueryProduct): Promise<IStoredProduct> => {
+  const { seller_id: sellerId, ...productWithoutSellerId } = product
   const productUpdated = await Products.findByIdAndUpdate(
-    id, product, { new: true, select: '-seller_id' }
+    id, productWithoutSellerId, { new: true }
   ).lean()
 
   if (productUpdated == null) {
