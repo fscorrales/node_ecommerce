@@ -89,7 +89,8 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
       return this.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
     }
   },
-  versionKey: false
+  versionKey: false,
+  strict: true
 })
 
 export const Users = mongoose.model<IUser, UserModel>('users', userSchema)

@@ -3,7 +3,6 @@ import {
   createOneCtrl, getOneCtrl, getAllCtrl, getAllActiveCtrl,
   getAllDeletedCtrl, updateOneCtrl, deleteOneCtrl, deleteOneForeverCtrl
 } from '../controllers/users'
-import { IPublicStoredUser } from '../models/users'
 
 export const createOne = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -16,7 +15,7 @@ export const createOne = async (req: Request, res: Response): Promise<void> => {
 
 export const getAllActive = async (req: Request, res: Response): Promise<void> => {
   try {
-    const allUsers: IPublicStoredUser[] = await getAllActiveCtrl(req.query)
+    const allUsers = await getAllActiveCtrl(req.query)
     // Verificar si hay usuarios
     if (allUsers.length === 0) {
       res.status(404).send('No hay usuarios disponibles.')
@@ -32,9 +31,9 @@ export const getAllActive = async (req: Request, res: Response): Promise<void> =
   }
 }
 
-export const getAllDeleted = async (_: Request, res: Response): Promise<void> => {
+export const getAllDeleted = async (req: Request, res: Response): Promise<void> => {
   try {
-    const allUsers: IPublicStoredUser[] = await getAllDeletedCtrl()
+    const allUsers = await getAllDeletedCtrl(req.query)
     // Verificar si hay usuarios
     if (allUsers.length === 0) {
       res.status(404).send('No hay usuarios disponibles.')
@@ -52,7 +51,7 @@ export const getAllDeleted = async (_: Request, res: Response): Promise<void> =>
 
 export const getAll = async (req: Request, res: Response): Promise<void> => {
   try {
-    const allUsers: IPublicStoredUser[] = await getAllCtrl(req.query)
+    const allUsers = await getAllCtrl(req.query)
     // Verificar si hay usuarios
     if (allUsers.length === 0) {
       res.status(404).send('No hay usuarios disponibles.')

@@ -1,9 +1,14 @@
 import mongoose from 'mongoose'
 
-export interface IQueryProduct {
-  name?: string
+export interface IUpdateProduct {
+  name?: string | null
   description?: string | null
+  price?: number
+  quantity?: number
   image?: string | null
+}
+
+export interface IQueryProduct extends IUpdateProduct {
   seller_id?: mongoose.Types.ObjectId
 }
 
@@ -21,7 +26,12 @@ export interface IStoredProduct extends IProduct {
   _id: mongoose.Types.ObjectId
 }
 
-const productSchema = new mongoose.Schema<IProduct>({
+interface ProductModel extends mongoose.Model<IProduct> {
+  getDeleted: (queryUser?: IQueryProduct) => Promise<IStoredProduct[]>
+  getNotDeleted: (queryUser?: IQueryProduct) => Promise<IStoredProduct[]>
+}
+
+const productSchema = new mongoose.Schema<IProduct, ProductModel>({
   name: {
     type: String,
     required: true
@@ -52,7 +62,16 @@ const productSchema = new mongoose.Schema<IProduct>({
     required: false
   }
 }, {
-  versionKey: false
+  statics: {
+    getDeleted: function (queryProduct: IQueryProduct = {}) {
+      return this.find({ deactivated_at: { $ne: null }, ...queryProduct }).lean()
+    },
+    getNotDeleted: function (queryProduct: IQueryProduct = {}) {
+      return this.find({ deactivated_at: { $eq: null }, ...queryProduct }).lean()
+    }
+  },
+  versionKey: false,
+  strict: true
 })
 
-export const Products = mongoose.model<IProduct>('products', productSchema)
+export const Products = mongoose.model<IProduct, ProductModel>('products', productSchema)

@@ -20,7 +20,6 @@ export const createOneCtrl = async (user: ICreateUser): Promise<IPrivateStoredUs
 
 // Controlador para obtener todos los usuarios
 export const getAllActiveCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
-  // const users = await Users.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
   const users = await Users.getNotDeleted(queryUser)
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }

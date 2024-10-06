@@ -1,18 +1,21 @@
 import { Router } from 'express'
 import { validateObjectId } from '../validators/main'
-import { validateCreate, validateUpdate } from '../validators/users'
-import { createOne, getAllActive, getAllDeleted, getAll, getOne, updateOne, deleteOne, deleteOneForever } from '../handlers/users'
+import { validateCreate, validateQuery, validateUpdate } from '../validators/users'
+import {
+  createOne, getAllActive, getAllDeleted,
+  getAll, getOne, updateOne, deleteOne, deleteOneForever
+} from '../handlers/users'
 import { authorizeAdmin, verifyToken, authorizeAdminOrSameUser } from '../security/token'
 
 const usersRouter: Router = Router()
 
 usersRouter.post('/', verifyToken, authorizeAdmin, validateCreate, createOne)
 
-usersRouter.get('/', verifyToken, getAllActive)
+usersRouter.get('/', verifyToken, validateQuery, getAllActive)
 
-usersRouter.get('/deleted', verifyToken, authorizeAdmin, getAllDeleted)
+usersRouter.get('/deleted', verifyToken, authorizeAdmin, validateQuery, getAllDeleted)
 
-usersRouter.get('/include_deleted', verifyToken, authorizeAdmin, getAll)
+usersRouter.get('/include_deleted', verifyToken, authorizeAdmin, validateQuery, getAll)
 
 usersRouter.get('/:id', verifyToken, validateObjectId, getOne)
 

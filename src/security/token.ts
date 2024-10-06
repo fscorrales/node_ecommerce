@@ -1,6 +1,7 @@
 import { JwtPayload, sign, verify } from 'jsonwebtoken'
 import { JWT_SECRET } from '../config/base_config'
 import { Request, Response, NextFunction } from 'express'
+import { getOneCtrl } from '../controllers/products'
 
 const generateToken = (id: string, role: string): string => {
   const jwt = sign({ id, role }, JWT_SECRET, {
@@ -38,6 +39,19 @@ const authorizeAdmin = (req: Request, res: Response, next: NextFunction): void =
   }
 }
 
+const authorizeAdminOrSeller = (req: Request, res: Response, next: NextFunction): void => {
+  const token = req.cookies.access_token
+  const user = verify(token, JWT_SECRET) as JwtPayload
+  if (user.role !== 'admin' && user.role !== 'seller') {
+    res
+      .status(403)
+      .send('Acceso denegado: Se requieren privilegios de administrador o vendedor')
+  } else {
+    // Si el usuario es admin, permitir que continúe
+    next()
+  }
+}
+
 const authorizeAdminOrSameUser = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.cookies.access_token
   const user = verify(token, JWT_SECRET) as JwtPayload
@@ -52,4 +66,21 @@ const authorizeAdminOrSameUser = (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export { generateToken, verifyToken, authorizeAdmin, authorizeAdminOrSameUser }
+const authorizeAdminOrSameSeller = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const token = req.cookies.access_token
+  const user = verify(token, JWT_SECRET) as JwtPayload
+  const product = await getOneCtrl(req.params.id)
+  if (user.role !== 'admin' && user.id !== product.seller_id) {
+    res
+      .status(403)
+      .send('Acceso denegado: Solo el propio usuario tiene permisos o el administrador')
+  } else {
+    // Si el usuario es admin, permitir que continúe
+    next()
+  }
+}
+
+export {
+  generateToken, verifyToken, authorizeAdmin, authorizeAdminOrSeller,
+  authorizeAdminOrSameUser, authorizeAdminOrSameSeller
+}
