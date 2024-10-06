@@ -1,6 +1,53 @@
 import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+type creationRole = 'seller' | 'customer'
+type role = creationRole | 'admin'
+
+export interface IBaseUser {
+  username: string
+  email: string
+  image?: string | null
+}
+
+export interface ILoginUser {
+  username: string
+  password: string
+}
+
+export interface ICreateUser extends ILoginUser {
+  email: string
+  role: creationRole
+  image?: string | null
+}
+
+export interface IUpdateUser {
+  username?: string | null
+  email?: string | null
+  image?: string | null
+}
+
+export interface IQueryUser extends IUpdateUser {
+  _id?: mongoose.Types.ObjectId
+  role?: role
+}
+
+export interface IUser extends IBaseUser {
+  hash_password: string
+  role: role
+  deactivated_at?: Date
+}
+
+export interface IPublicStoredUser extends IBaseUser {
+  _id: mongoose.Types.ObjectId
+  role: role
+  desactivated_at?: Date
+}
+
+export interface IPrivateStoredUser extends IPublicStoredUser {
+  hash_password: string
+}
+
+const userSchema = new mongoose.Schema<IUser>({
   username: {
     type: String,
     unique: true,
@@ -40,4 +87,4 @@ userSchema.statics.getNotDeleted = function () {
   return this.find({ deactivated_at: { $eq: null } })
 }
 
-export default mongoose.model('users', userSchema)
+export const Users = mongoose.model('users', userSchema)

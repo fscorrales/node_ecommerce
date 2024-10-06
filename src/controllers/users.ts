@@ -1,9 +1,8 @@
-import Users from '../models/users'
-import { CreateUser, PrivateStoredUser, PublicStoredUser, UpdateUser, QueryUser } from '../types'
+import { Users, ICreateUser, IUpdateUser, IQueryUser, IPrivateStoredUser, IPublicStoredUser } from '../models/users'
 import { encrypt } from '../security/password'
 
 // Controlador para crear un nuevo usuario
-export const createOneCtrl = async (user: CreateUser): Promise<PrivateStoredUser> => {
+export const createOneCtrl = async (user: ICreateUser): Promise<IPrivateStoredUser> => {
   const existedUser = await Users.findOne({
     $or: [
       { email: user.email },
@@ -20,22 +19,22 @@ export const createOneCtrl = async (user: CreateUser): Promise<PrivateStoredUser
 }
 
 // Controlador para obtener todos los usuarios
-export const getAllActiveCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+export const getAllActiveCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
   const users = await Users.find({ deactivated_at: { $eq: null }, ...queryUser }).lean()
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
-export const getAllDeletedCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+export const getAllDeletedCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
   const users = await Users.find({ deactivated_at: { $ne: null }, ...queryUser }).lean()
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
-export const getAllCtrl = async (queryUser: QueryUser = {}): Promise<PublicStoredUser[]> => {
+export const getAllCtrl = async (queryUser: IQueryUser = {}): Promise<IPublicStoredUser[]> => {
   const users = await Users.find(queryUser).lean()
   return users.map(({ hash_password: _, ...userWithoutPassword }) => userWithoutPassword)
 }
 
-export const getOne = async (id: string): Promise<PublicStoredUser> => {
+export const getOneCtrl = async (id: string): Promise<IPublicStoredUser> => {
   const user = await Users.findById(id).lean()
 
   if (user == null) {
@@ -45,7 +44,7 @@ export const getOne = async (id: string): Promise<PublicStoredUser> => {
   return userWithoutPassword
 }
 
-export const updateOneCtrl = async (id: string, user: UpdateUser): Promise<PublicStoredUser> => {
+export const updateOneCtrl = async (id: string, user: IUpdateUser): Promise<IPublicStoredUser> => {
   const existedUser = await Users.findOne({
     $or: [
       { email: user.email },
@@ -69,7 +68,7 @@ export const updateOneCtrl = async (id: string, user: UpdateUser): Promise<Publi
   return userUpdatedWithoutPassword
 }
 
-export const deleteOneCtrl = async (id: string): Promise<PublicStoredUser> => {
+export const deleteOneCtrl = async (id: string): Promise<IPublicStoredUser> => {
   const userDeleted = await Users.findByIdAndUpdate(
     id, { deactivated_at: Date.now() }, { new: true }
   ).lean()
@@ -81,7 +80,7 @@ export const deleteOneCtrl = async (id: string): Promise<PublicStoredUser> => {
   return userDeletedWithoutPassword
 }
 
-export const deleteOneForeverCtrl = async (id: string): Promise<PublicStoredUser> => {
+export const deleteOneForeverCtrl = async (id: string): Promise<IPublicStoredUser> => {
   const userDeleted = await Users.findByIdAndDelete(id).lean()
 
   if (userDeleted == null) {

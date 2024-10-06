@@ -1,17 +1,16 @@
-import { CreateUser, LoginUser, PrivateStoredUser } from '../types'
 import { createOneCtrl } from './users'
-import Users from '../models/users'
+import { Users, ILoginUser, ICreateUser, IPrivateStoredUser } from '../models/users'
 import { verified } from '../security/password'
 import { generateToken } from '../security/token'
 
 // Controlador para registrarse
-export const registerCtrl = async (user: CreateUser): Promise<PrivateStoredUser> => {
+export const registerCtrl = async (user: ICreateUser): Promise<IPrivateStoredUser> => {
   const newUser = await createOneCtrl(user)
   return newUser
 }
 
 // Controlador para iniciar sesión (login)
-export const loginCtrl = async (user: LoginUser): Promise<string> => {
+export const loginCtrl = async (user: ILoginUser): Promise<string> => {
   // Buscar si el usuario con el email proporcionado existe en el arreglo de users
   const existedUser = await Users.findOne({ username: user.username }).lean()
 
