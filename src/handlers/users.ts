@@ -3,6 +3,8 @@ import {
   createOneCtrl, getOneCtrl, getAllCtrl, getAllActiveCtrl,
   getAllDeletedCtrl, updateOneCtrl, deleteOneCtrl, deleteOneForeverCtrl
 } from '../controllers/users'
+import { JwtPayload, verify } from 'jsonwebtoken'
+import { JWT_SECRET } from '../config/base_config'
 
 export const createOne = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -71,6 +73,17 @@ export const getOne = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params
     const user = await getOneCtrl(id)
+    res.status(200).json(user)
+  } catch (error: any) {
+    res.status(500).send(error.message)
+  }
+}
+
+export const getMe = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const token = req.cookies.access_token
+    const userLogged = verify(token, JWT_SECRET) as JwtPayload
+    const user = await getOneCtrl(userLogged.id)
     res.status(200).json(user)
   } catch (error: any) {
     res.status(500).send(error.message)
