@@ -7,6 +7,7 @@ export const createOneCtrl = async (product: IProduct): Promise<IStoredProduct> 
   if (existedUser == null) {
     throw new Error('Seller not found by ID')
   }
+  console.log(product)
   const newProduct = await Products.create(product)
   return newProduct
 }
@@ -26,7 +27,9 @@ export const getAllCtrl = async (queryProduct: IQueryProduct = {}): Promise<ISto
 }
 
 export const getOneCtrl = async (id: string): Promise<IStoredProduct> => {
-  const product = await Products.findById(id).lean()
+  const product = await Products.findById(id).populate(
+    { path: 'seller_id', select: '-hash_password' }
+  ).lean()
   if (product == null) {
     throw new Error('Product not found')
   }
