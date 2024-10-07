@@ -39,19 +39,6 @@ const authorizeAdmin = (req: Request, res: Response, next: NextFunction): void =
   }
 }
 
-const authorizeAdminOrSeller = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.cookies.access_token
-  const user = verify(token, JWT_SECRET) as JwtPayload
-  if (user.role !== 'admin' && user.role !== 'seller') {
-    res
-      .status(403)
-      .send('Acceso denegado: Se requieren privilegios de administrador o vendedor')
-  } else {
-    // Si el usuario es admin, permitir que continúe
-    next()
-  }
-}
-
 const authorizeAdminOrSameUser = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.cookies.access_token
   const user = verify(token, JWT_SECRET) as JwtPayload
@@ -66,17 +53,37 @@ const authorizeAdminOrSameUser = (req: Request, res: Response, next: NextFunctio
   }
 }
 
-const authorizeAdminOrSameSeller = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const authorizeAdminOrSeller = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.cookies.access_token
   const user = verify(token, JWT_SECRET) as JwtPayload
-  const product = await getOneCtrl(req.params.id)
-  if (user.role !== 'admin' && user.id !== product.seller_id) {
+  if (user.role !== 'admin' && user.role !== 'seller') {
     res
       .status(403)
-      .send('Acceso denegado: Solo el propio usuario tiene permisos o el administrador')
+      .send('Acceso denegado: Se requieren privilegios de administrador o vendedor')
   } else {
     // Si el usuario es admin, permitir que continúe
     next()
+  }
+}
+
+const authorizeAdminOrSameSeller = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.cookies.access_token
+    const user = verify(token, JWT_SECRET) as JwtPayload
+    const { id } = req.params
+    const product = id !== undefined && id.trim() !== '' ? await getOneCtrl(id, false) : { seller_id: req.body.seller_id }
+    const sellerId = product.seller_id.toString()
+    console.log(user.id, sellerId)
+    if (user.role !== 'admin' && (user.id !== sellerId || user.role !== 'seller')) {
+      res
+        .status(403)
+        .send('Acceso denegado: Solo el propio vendedor tiene permisos o el administrador')
+    } else {
+      // Si el usuario es admin, permitir que continúe
+      next()
+    }
+  } catch (error: any) {
+    res.status(500).send(error.message)
   }
 }
 

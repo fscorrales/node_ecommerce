@@ -7,7 +7,7 @@ import { validateCreate, validateQuery } from '../validators/products'
 import { validateObjectId } from '../validators/main'
 import {
   verifyToken, authorizeAdminOrSameSeller,
-  authorizeAdmin, authorizeAdminOrSeller
+  authorizeAdmin
 } from '../security/token'
 
 const productsRouter = Router()
@@ -20,7 +20,7 @@ productsRouter.get('/include_deleted', verifyToken, authorizeAdmin, validateQuer
 
 productsRouter.get('/:id', validateObjectId, getOne)
 
-productsRouter.post('/', verifyToken, authorizeAdminOrSeller, validateCreate, createOne)
+productsRouter.post('/', verifyToken, validateCreate, authorizeAdminOrSameSeller, createOne)
 
 productsRouter.put('/:id', verifyToken, validateObjectId, authorizeAdminOrSameSeller, updateOne)
 

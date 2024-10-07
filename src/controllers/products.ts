@@ -26,10 +26,15 @@ export const getAllCtrl = async (queryProduct: IQueryProduct = {}): Promise<ISto
   return await Products.find(queryProduct)
 }
 
-export const getOneCtrl = async (id: string): Promise<IStoredProduct> => {
-  const product = await Products.findById(id).populate(
-    { path: 'seller_id', select: '-hash_password' }
-  ).lean()
+export const getOneCtrl = async (id: string, populate: boolean = true): Promise<IStoredProduct> => {
+  let product = null
+  if (populate) {
+    product = await Products.findById(id).populate(
+      { path: 'seller_id', select: '-hash_password' }
+    ).lean()
+  } else {
+    product = await Products.findById(id)
+  }
   if (product == null) {
     throw new Error('Product not found')
   }
