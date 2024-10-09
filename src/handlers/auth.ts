@@ -20,13 +20,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const token = await loginCtrl(req.body)
     res
-      .cookie('access_token', token
-      //   {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === 'production',
-      //   sameSite: 'strict',
-      //   maxAge: 1000 * 60 * 60 // 1 hora
-      // }
+      .cookie('access_token', token,
+        {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 1000 * 60 * 60 // 1 hora
+        }
       )
       .send({ message: 'Inicio de sesión exitoso' })
   } catch (err: any) {
