@@ -1,11 +1,14 @@
 import { Router } from 'express'
+import {
+  createOne,
+  deleteOne, deleteOneForever,
+  getAll,
+  getAllActive, getAllDeleted, getMe,
+  getOne, updateOne
+} from '../handlers/users'
+import { authorizeAdmin, authorizeAdminOrSameUser, verifyToken } from '../security/token'
 import { validateObjectId } from '../validators/main'
 import { validateCreate, validateQuery, validateUpdate } from '../validators/users'
-import {
-  createOne, getAllActive, getAllDeleted, getMe,
-  getAll, getOne, updateOne, deleteOne, deleteOneForever
-} from '../handlers/users'
-import { authorizeAdmin, verifyToken, authorizeAdminOrSameUser } from '../security/token'
 
 const usersRouter: Router = Router()
 
@@ -15,7 +18,7 @@ usersRouter.get('/me', verifyToken, getMe)
 
 usersRouter.get('/:id', verifyToken, validateObjectId, getOne)
 
-usersRouter.get('/', verifyToken, validateQuery, getAllActive)
+usersRouter.get('/', validateQuery, getAllActive)
 
 usersRouter.get('/deleted', verifyToken, authorizeAdmin, validateQuery, getAllDeleted)
 
